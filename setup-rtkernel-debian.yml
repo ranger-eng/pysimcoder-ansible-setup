@@ -1,0 +1,9 @@
+--- 
+
+- hosts: localhost
+  tasks:
+
+  - name: install rt-kernel
+    become: true
+    apt:
+      name: linux-image-rt-amd64, linux-headers-rt-amd64, linux-headers-5.10.0-14-common-rt

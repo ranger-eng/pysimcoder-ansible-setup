@@ -2,7 +2,7 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-name = "5.13.0-40-generic-PREEMPT-RT==FALSE"
+name = "5.10.0-14-rt-amd64-preempt-rt==TRUE"
 
 num_loops = 1000000
 os.system("sudo cyclictest -l{} -m -S -p90 -i200 -h400 -q >".format(num_loops)+name+".txt")
