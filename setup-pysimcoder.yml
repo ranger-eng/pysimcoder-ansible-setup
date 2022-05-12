@@ -1,0 +1,52 @@
+---
+
+- hosts: localhost
+  tasks:
+
+# git clone pysimcoder
+  - name: git clone pysimcoder
+    git:
+      repo: git@github.com:robertobucher/pysimCoder.git
+      dest: "{{ ansible_env.HOME }}/src/pysimcoder"
+
+# install dependencies
+
+  - name: install pysimcoder apt dependencies
+    become: true
+    apt:
+      name: python3-venv, python3-pip, libxml2-dev, libxmlsec1-dev, libcomedi-dev
+
+  - name: run ubuntu_dependency_installer.py
+    become: true
+    ansible.builtin.command: python3 ./ubuntu_dependency_installer.py
+    args:
+      chdir: "{{ ansible_env.HOME }}/src/pysimcoder"
+
+
+  - name: install numpy and tornado with pip
+    pip:
+      name: numpy, tornado
+
+  - name: install python libs
+    become: true
+    ansible.builtin.command: python3 python_libs_install.py
+    args:
+      chdir: "{{ ansible_env.HOME }}/src/pysimcoder"
+
+  - name: install additional python libs
+    become: true
+    pip:
+      name: scikit-build, cmake
+
+  - name: make pysimcoder as sudo
+    become: true
+    make:
+      chdir: "{{ ansible_env.HOME }}/src/pysimcoder"
+
+  - name: make pysimcoder as user
+    become: true
+    become_user: "{{ ansible_env.USER }}"
+    make:
+      chdir: "{{ ansible_env.HOME }}/src/pysimcoder"
+      target: user
+
