@@ -1,27 +1,20 @@
 ---
 
 - hosts: localhost
-  become: true
   tasks:
 
 
 # pip
 
-  - name: install pip
+  - name: install basic packages
+    become: true
     apt: 
-      name: python3-pip
+      name: python3, python3-pip, git
 
   - name: install matplotlib
+    become: true
     pip:
       name: numpy, matplotlib
-
-
-# basic packages
-
-  - name: install basic packages
-    apt:
-      name: git, neovim, htop, 
-
 
 # cycletest
 
@@ -32,15 +25,17 @@
   - name: clone cycletest repo
     ansible.builtin.git:
       repo: git://git.kernel.org/pub/scm/utils/rt-tests/rt-tests.git
-      dest: /src/rt-tests
+      dest: "{{ ansible_env.HOME }}/src/rt-tests"
       clone: yes
 
   - name: cycletest make all
+    become: true
     ansible.builtin.command: 
       cmd: make all
-      chdir: /src/rt-tests
+      chdir: "{{ ansible_env.HOME }}/src/rt-tests"
 
   - name: cycletest make install
+    become: true
     ansible.builtin.command: 
       cmd: make install
-      chdir: /src/rt-tests
+      chdir: "{{ ansible_env.HOME }}/src/rt-tests"
